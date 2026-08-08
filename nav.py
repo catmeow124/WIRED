@@ -10,9 +10,9 @@ entered = {}
 
 def get(location):
     request = f"""GET
-        LOCATION: {location}
-        .
-    """
+LOCATION: {location}
+.
+"""
 
 
     with socket.socket(
@@ -26,29 +26,33 @@ def get(location):
             request.encode()
         )
 
-        data = s.recv(4096)
+        data = b""
+        while b"\n.\n" not in data:
+            data = data + s.recv(4096)
+
+        header_end = data.find(b"\n.\n") + len(b"\n.\n")
+        headers = data[:header_end].decode()
+        content = data[header_end:]
+
+        size = 0
+        for line in headers.splitlines():
+            if line.startswith("SIZE:"):
+                size = int(line.split(":", 1)[1].strip())
+
+        while len(content) < size:
+            content = content + s.recv(4096)
 
 
-    return data.decode()
+    return headers, content.decode()
 
 def navigate(location):
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        response = get(location)
+        headers, content = get(location)
 
-        if not response.startswith("200 OK"):
-            print(response)
+        if not headers.startswith("200 OK"):
+            print(headers)
             return
-
-        content = response.split(
-            "CONTENT: ",
-            1
-        )[1]
-
-        content = content.rsplit(
-            "\n.",
-            1
-        )[0]
 
         print("=" * 50)
         print(location)
@@ -92,6 +96,4 @@ def navigate(location):
             except (ValueError, IndexError):
                 print("Error :(\nBad selection.")
 
-navigate("WIRED://SERVER1/GLOBAL/MYSITE/INDEX.WD")
-
-
+navigate("WIRED://SERVER1/GLOBAL/FILES/INDEX.WD")
