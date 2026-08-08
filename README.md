@@ -2,18 +2,18 @@
 
 **The WIRED Protocol**
 Wide Interconnected Redistribution and Exchange of Data Network
-> As of now, The current WIRED implementation supports (GET, COPY)
+> As of now, The current WIRED implementation supports (FETCH, COPY)
 
 ---
 
-## GET
+## FETCH
 
 Retrieve a resource.
 
 ### Request
 
 ```text
-GET
+FETCH
 LOCATION: WIRED://SERVER1/GLOBAL/INDEX.TXT
 .
 ```
@@ -31,33 +31,6 @@ TYPE: text/plain
 
 ---
 
-## POST
-
-Create a resource.
-
-### Request
-
-```text
-POST
-TITLE: HELLO WORLD
-DESCRIPTION: HELLO WORLD TEXT FILE
-DESTINATION: WIRED://SERVER1/GLOBAL/HELLO.TXT
-SIZE: 13
-TYPE: text/plain
-.
-Hello, WIRED!
-```
-
-### Response
-
-```text
-201 CREATED
-DESTINATION: WIRED://SERVER1/GLOBAL/HELLO.TXT
-SIZE: 13
-.
-```
-
----
 
 ## COPY
 
@@ -85,38 +58,12 @@ MESSAGE: File copied good
 .
 ```
 
----
 
-## EXCHANGE
-
-Offer one resource in exchange for another. Servers accept or decline.
-
-### Request
-
-```text
-EXCHANGE
-REQUEST: WIRED://SERVER5/GLOBAL/INFO.TXT
-OFFER: WIRED://SERVER3/GLOBAL/DOCUMENT.TXT
-EXPIRE: 5000
-.
-```
-
-### Response
-
-```text
-202 EXCHANGE CREATED
-REQUEST: WIRED://SERVER5/GLOBAL/IDK/INFO.TXT
-OFFER: WIRED://SERVER3/GLOBAL/COOLSTUFF/DOCUMENT.TXT
-EXPIRE: 5000
-.
-```
-
----
 
 ## Methods
 
 
- `GET`       Retrieve a resource.                                                    
+ `FETCH`       Retrieve a resource.                                                    
  `POST`      Create a resource.                                                      
  `COPY`      Copy an existing resource, potentially between different WIRED servers. 
  `EXCHANGE`  Offer one resource in exchange for another. Servers accept or decline.  
