@@ -34,7 +34,7 @@ with socket.socket(
     print("COPY response:")
     print(data.decode("utf-8"))
 
-get_request = """GET
+FETCH_request = """FETCH
 LOCATION: WIRED://SERVER1/GLOBAL/FILES/HELLO.TXT
 .
 """
@@ -47,11 +47,11 @@ with socket.socket(
 
     s.connect((HOST, PORT))
 
-    print("Sending GET request:")
-    print(get_request)
+    print("Sending FETCH request:")
+    print(FETCH_request)
 
     s.sendall(
-        get_request.encode("utf-8")
+        FETCH_request.encode("utf-8")
     )
 
     data = b""
@@ -62,7 +62,7 @@ with socket.socket(
     headers = data[:header_end].decode("utf-8")
     file_data = data[header_end:]
 
-    print("GET headers:")
+    print("FETCH headers:")
     print(headers)
 
     file_size = 0
@@ -73,7 +73,7 @@ with socket.socket(
     while len(file_data) < file_size:
         file_data = file_data + s.recv(4096)
 
-    print("GET returned:")
+    print("FETCH returned:")
     print(file_data.decode("utf-8"))
 
 print("it works! :D")
