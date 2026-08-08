@@ -8,8 +8,8 @@ HOST = "127.0.0.1"
 PORT = 65432
 entered = {}
 
-def get(location):
-    request = f"""GET
+def FETCH(location):
+    request = f"""FETCH
 LOCATION: {location}
 .
 """
@@ -48,7 +48,7 @@ LOCATION: {location}
 def navigate(location):
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')
-        headers, content = get(location)
+        headers, content = FETCH(location)
 
         if not headers.startswith("200 OK"):
             print(headers)
@@ -65,7 +65,7 @@ def navigate(location):
             content
         )
 
-        for i, (name, target) in enumerate(
+        for i, (name, tarFETCH) in enumerate(
             links,
             start=1
         ):
