@@ -1,7 +1,7 @@
 # WIRED
 
 **The WIRED Protocol**
-
+Wide Interconnected Redistribution and Exchange of Data Network
 > As of now, The current WIRED implementation supports (GET, COPY)
 
 ---
