@@ -173,7 +173,7 @@ def handle_copy(conn, headers):
             f.close()
 
         else:
-            request = "GET\nLOCATION: " + source + "\n.\n"
+            request = "FETCH\nLOCATION: " + source + "\n.\n"
             status, response_headers, file_data = request_from_server(source_server, request)
 
             if not status.startswith("200"):
@@ -224,7 +224,7 @@ def handle_client(conn, addr):
         print("Command:", command)
         print("Headers:", headers)
 
-        if command == "GET":
+        if command == "FETCH":
             handle_get(conn, headers)
         elif command == "COPY":
             handle_copy(conn, headers)
