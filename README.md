@@ -3,6 +3,7 @@
 **The WIRED Protocol**
 Wide Interconnected Redistribution and Exchange of Data Network
 > As of now, The current WIRED implementation supports (FETCH, COPY)
+> https://www.reddit.com/r/wirednet/
 
 ---
 
