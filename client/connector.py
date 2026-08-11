@@ -44,7 +44,6 @@ def read_exact(sock, size):
 
 
 def locate_server(server_name):
-    """Ask the UDNS server where SERVER_NAME lives. Returns {name, address, port}."""
     udns_config = load_udns_config()
     sock = socket.socket()
     sock.connect((udns_config["udns_address"], udns_config["udns_port"]))
@@ -60,7 +59,6 @@ def locate_server(server_name):
 
 
 def resolve(username_at_server):
-    """Ask the UDNS server to resolve a username@server into user info."""
     config = load_udns_config()
     sock = socket.socket()
     sock.connect((config["udns_address"], config["udns_port"]))
@@ -87,7 +85,6 @@ def resolve(username_at_server):
 
 
 def ping():
-    """Check whether the UDNS server is alive."""
     config = load_udns_config()
     sock = socket.socket()
     sock.connect((config["udns_address"], config["udns_port"]))
