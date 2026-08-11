@@ -1,30 +1,41 @@
 import socket
 import shlex
 import os
+import json
+
+with open("server_config.json") as f:
+    CONFIG = json.load(f)
+
+SERVER_NAME = CONFIG["server_name"]
+STORAGE = "STORAGE"
+good_list = ["-FETCH"]
 
 server = socket.socket()
 server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server.bind(("localhost", 5000))
+server.bind((CONFIG["address"], CONFIG["port"]))
 server.listen(1)
 
-STORAGE = "STORAGE"
-SERVER_NAME = "SERVER1"
-
-
 def fetch(conn, path):
-    file_path = wired_path(path)
+    try:
+        file_path = wired_path(path)
+    except ValueError as e:
+        print("Bad path:", e)
+        conn.sendall(b"DENIED\n")
+        return
+
+    if not os.path.isfile(file_path):
+        print("File not found:", file_path)
+        conn.sendall(b"NOTFOUND\n")
+        return
 
     file_size = os.path.getsize(file_path)
-
+    conn.sendall(b"OK\n")
     conn.sendall(f"{file_size}\n".encode())
-
     with open(file_path, "rb") as f:
         while True:
             fetch_data = f.read(4096)
-
             if not fetch_data:
                 break
-
             conn.sendall(fetch_data)
 
 def wired_path(location):
@@ -49,31 +60,53 @@ def wired_path(location):
     return full_path
 
 
-conn, addr = server.accept()
-print("[*] Connected:", addr)
+print(f"[*] WIRED server '{SERVER_NAME}' listening on {CONFIG['address']}:{CONFIG['port']}")
 
-data = conn.recv(1024).decode().strip()
-print("Client:", data)
+try:
+    while True:
 
-if data.startswith("-"):
-    parts = shlex.split(data)
+        conn, addr = server.accept()
+        print("[*] Connected:", addr)
 
-    command = parts[0]
-    arguments = parts[1:]
+        try:
 
-    print("Command:", command)
-    print("Arguments:", arguments)
+            data = conn.recv(1024).decode().strip()
+            print("Client:", data)
 
-    if command == "#":
-        pass
+            if data.startswith("-"):
+                parts = shlex.split(data)
 
-    if command == "-FETCH":
-        if len(arguments) != 1:
-            print("wrong number of args for command")
-        else:
-            print("good fetch")
-            fetch(conn, arguments[0])
+                command = parts[0]
+                arguments = parts[1:]
 
+                print("Command:", command)
+                print("Arguments:", arguments)
 
-conn.close()
-server.close()
+                if command == "#":
+                    pass
+
+                if command in good_list:
+                    if command == "-FETCH":
+                        if len(arguments) != 1:
+                            print("wrong number of args for command")
+                            conn.sendall(b"ERROR\n")
+                        else:
+                            print("good fetch")
+                            fetch(conn, arguments[0])
+                else:
+                        print("not allowed")
+                        conn.sendall(b"DENIED\n")
+
+        except Exception as e:
+            print("[!] Error:", e)
+
+        finally:
+            conn.close()
+            print("[*] Connection closed.")
+
+except KeyboardInterrupt:
+    print("\n[*] Server shutting down...")
+
+finally:
+    server.close()
+    print("[*] Server closed.")
