@@ -1,0 +1,5 @@
+{
+  "udns_server_name": "UDNS1",
+  "udns_address": "localhost",
+  "udns_port": 6000
+}
