@@ -1,0 +1,12 @@
+[
+  {
+    "name": "SERVER1",
+    "address": "localhost",
+    "port": 5000
+  },
+  {
+    "name": "SERVER123",
+    "address": "localhost",
+    "port": 5001
+  }
+]
