@@ -1,0 +1,5 @@
+{
+  "server_name": "SERVER1",
+  "address": "localhost",
+  "port": 5000
+}
